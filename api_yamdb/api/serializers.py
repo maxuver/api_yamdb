@@ -21,4 +21,3 @@ class CreateUserSerializer(serializers.ModelSerializer):
 class UserJWTTokenCreateSerializer(serializers.Serializer):
     confirmation_code = serializers.CharField(required=True)
     username = serializers.CharField(required=True)
-
