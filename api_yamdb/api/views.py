@@ -12,16 +12,10 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from reviews.models import Category, Genre, Title, Review
-from .filters import TitleFilter
-from .mixins import ListCreateDestroyViewSet
 from .permissions import (IsAdmin, IsAdminOrReadOnly,
                           IsOwnerAdminModeratorOrReadOnly)
 from .serializers import (UsersSerializer, CreateUserSerializer,
-                          UserJWTTokenCreateSerializer,
-                          CategorySerializer, GenreSerializer,
-                          ReviewSerializer, CommentSerializer,
-                          TitlesEditorSerializer, TitlesReadSerializer)
+                          UserJWTTokenCreateSerializer)
 
 User = get_user_model()
 
@@ -86,29 +80,3 @@ def user_jwt_token_create_view(request):
         'Неверный код подтверждения или имя пользователя!',
         status=HTTPStatus.BAD_REQUEST
     )
-
-
-class CategoryViewSet(ListCreateDestroyViewSet):
-    ...
-
-
-class GenreViewSet(ListCreateDestroyViewSet):
-    ...
-
-
-class TitleViewSet(viewsets.ModelViewSet):
-    ...
-
-
-class ReviewViewSet(viewsets.ModelViewSet):
-    serializer_class = ReviewSerializer
-    permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
-
-    ...
-
-
-class CommentViewSet(viewsets.ModelViewSet):
-    serializer_class = CommentSerializer
-    permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
-
-    ...
