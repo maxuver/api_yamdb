@@ -8,7 +8,7 @@ from .serializers import (CategorySerializer, GenreSerializer,
                           TitleReadSerializer, TitleWriteSerializer)
 
 
-class TitleViewsSet(viewsets.ModelViewSet):
+class TitleViewSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     read_serializer_class = TitleReadSerializer
     write_serializer_class = TitleWriteSerializer
@@ -22,7 +22,7 @@ class TitleViewsSet(viewsets.ModelViewSet):
         return self.write_serializer_class
 
 
-class GenreViewsSet(ListCreateDeleteViewSet):
+class GenreViewSet(ListCreateDeleteViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     filter_backends = [filters.SearchFilter]
@@ -31,7 +31,7 @@ class GenreViewsSet(ListCreateDeleteViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
 
-class CategoryViewsSet(ListCreateDeleteViewSet):
+class CategoryViewSet(ListCreateDeleteViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = [filters.SearchFilter]
