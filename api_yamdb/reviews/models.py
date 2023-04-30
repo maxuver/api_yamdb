@@ -1,5 +1,5 @@
 from django.db import models
-from .validators import validate_year
+from .validators import validate_actual_year
 
 
 class Genre(models.Model):
@@ -22,7 +22,7 @@ class Title(models.Model):
     name = models.CharField(max_length=256, verbose_name='Название')
     year = models.IntegerField(
         verbose_name='Год создания',
-        validators=[validate_year])
+        validators=[validate_actual_year])
     rating = models.IntegerField(verbose_name='Рейтинг')
     description = models.TextField(verbose_name='Описание')
     genre = models.ManyToManyField(Genre, through='GenreTitle')

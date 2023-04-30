@@ -1,7 +1,10 @@
 from django.core.exceptions import ValidationError
-import datetime as dt
+from django.utils import timezone
 
 
-def validate_year(value):
-    if value > dt.date.today().year:
-        raise ValidationError('Проверьте год создания!')
+def validate_actual_year(value):
+    if value > timezone.now().year:
+        raise ValidationError(
+            ('Год %(value)s ещё не наступил'),
+            params={'value': value},
+        )
