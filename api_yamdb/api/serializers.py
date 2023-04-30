@@ -35,8 +35,7 @@ class TitleWriteSerializer(serializers.ModelSerializer):
         many=True, slug_field='slug', queryset=Genre.objects.all())
 
     def validate_year(self, value):
-        now = dt.date.today().year
-        if value > now:
+        if value > dt.date.today().year:
             raise serializers.ValidationError('Проверьте год создания!')
         return value
 

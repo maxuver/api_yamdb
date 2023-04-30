@@ -1,8 +1,7 @@
-from django_filters import rest_framework as filt
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, viewsets
-from rest_framework.permissions import AllowAny, IsAdminUser
 from reviews.models import Category, Genre, Title
-
+from .permissions import IsAdminOrReadOnly
 from .filters import TitleFilter
 from .mixins import ListCreateDeleteViewSet
 from .serializers import (CategorySerializer, GenreSerializer,
@@ -13,20 +12,14 @@ class TitleViewsSet(viewsets.ModelViewSet):
     queryset = Title.objects.all()
     read_serializer_class = TitleReadSerializer
     write_serializer_class = TitleWriteSerializer
-    filter_backends = [filt.DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend]
     filterset_class = TitleFilter
+    permission_classes = [IsAdminOrReadOnly]
 
     def get_serializer_class(self):
         if self.action in ('list', 'get'):
             return self.read_serializer_class
         return self.write_serializer_class
-
-    def get_permissions(self):
-        if self.action in ('get', 'list'):
-            return AllowAny(),
-        if self.action in ('destroy', 'create', 'update'):
-            return IsAdminUser(),
-        return {}
 
 
 class GenreViewsSet(ListCreateDeleteViewSet):
@@ -35,13 +28,7 @@ class GenreViewsSet(ListCreateDeleteViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
     lookup_field = 'slug'
-
-    def get_permissions(self):
-        if self.action == 'list':
-            return AllowAny(),
-        if self.action in ('destroy', 'create'):
-            return IsAdminUser(),
-        return {}
+    permission_classes = [IsAdminOrReadOnly]
 
 
 class CategoryViewsSet(ListCreateDeleteViewSet):
@@ -50,10 +37,4 @@ class CategoryViewsSet(ListCreateDeleteViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ['name']
     lookup_field = 'slug'
-
-    def get_permissions(self):
-        if self.action == 'list':
-            return AllowAny(),
-        if self.action in ('destroy', 'create'):
-            return IsAdminUser(),
-        return {}
+    permission_classes = [IsAdminOrReadOnly]

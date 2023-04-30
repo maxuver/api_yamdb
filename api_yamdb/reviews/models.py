@@ -1,8 +1,9 @@
 from django.db import models
+from .validators import validate_year
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, verbose_name='Название')
     slug = models.SlugField(unique=True)
 
     def __str__(self):
@@ -10,7 +11,7 @@ class Genre(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, verbose_name='Название')
     slug = models.SlugField(unique=True)
 
     def __str__(self):
@@ -18,10 +19,12 @@ class Category(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=256)
-    year = models.IntegerField()
-    rating = models.IntegerField()
-    description = models.TextField()
+    name = models.CharField(max_length=256, verbose_name='Название')
+    year = models.IntegerField(
+        verbose_name='Год создания',
+        validators=[validate_year])
+    rating = models.IntegerField(verbose_name='Рейтинг')
+    description = models.TextField(verbose_name='Описание')
     genre = models.ManyToManyField(Genre, through='GenreTitle')
     category = models.ForeignKey(
         Category,
@@ -44,3 +47,6 @@ class Title(models.Model):
 class GenreTitle(models.Model):
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
     title = models.ForeignKey(Title, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return f'{self.title} {self.genre}'
