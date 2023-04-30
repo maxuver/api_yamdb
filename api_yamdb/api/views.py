@@ -15,8 +15,8 @@ from .permissions import (IsAdmin, IsAdminOrReadOnly,
                           IsOwnerAdminModeratorOrReadOnly)
 from .serializers import (UsersSerializer, CreateUserSerializer,
                           UserJWTTokenCreateSerializer)
+from users.models  import User
 
-User = get_user_model()
 
 
 class UsersViewSet(viewsets.ModelViewSet):
