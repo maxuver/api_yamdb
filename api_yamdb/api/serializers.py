@@ -1,6 +1,25 @@
 from rest_framework import serializers
 from reviews.models import Title, Genre, Category
-import datetime as dt
+from users.models  import User
+
+
+class UsersSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username', 'email', 'first_name', 'last_name',
+                  'bio', 'role')
+
+
+class CreateUserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        fields = ('username', 'email')
+        model = User
+
+
+class UserJWTTokenCreateSerializer(serializers.Serializer):
+    confirmation_code = serializers.CharField(required=True)
+    username = serializers.CharField(required=True)
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -33,11 +52,6 @@ class TitleWriteSerializer(serializers.ModelSerializer):
         slug_field='slug', queryset=Category.objects.all())
     genre = serializers.SlugRelatedField(
         many=True, slug_field='slug', queryset=Genre.objects.all())
-
-    def validate_year(self, value):
-        if value > dt.date.today().year:
-            raise serializers.ValidationError('Проверьте год создания!')
-        return value
 
     class Meta:
         fields = '__all__'
