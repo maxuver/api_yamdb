@@ -28,7 +28,10 @@ class Title(models.Model):
     year = models.IntegerField(
         verbose_name='Год создания',
         validators=[validate_actual_year])
-    rating = models.IntegerField(verbose_name='Рейтинг')
+    rating = models.IntegerField(
+        verbose_name='Рейтинг',
+        default=5
+        )
     description = models.TextField(verbose_name='Описание')
     genre = models.ManyToManyField(Genre, through='GenreTitle')
     category = models.ForeignKey(
@@ -55,7 +58,7 @@ class GenreTitle(models.Model):
 
     def __str__(self):
         return f'{self.title} {self.genre}'
-    
+
 
 class Review(models.Model):
     text = models.TextField()
@@ -70,6 +73,14 @@ class Review(models.Model):
     pub_date = models.DateTimeField(
         'Дата публикации', auto_now_add=True
     )
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=['title', 'author'],
+                name='title_author_unique_match'
+            ),
+        ]
 
     def __str__(self):
         return self.text

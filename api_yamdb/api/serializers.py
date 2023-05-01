@@ -1,8 +1,7 @@
-from rest_framework import serializers
-from rest_framework.relations import SlugRelatedField
+from rest_framework import serializers, validators
 
 from reviews.models import Title, Genre, Category, Review
-from users.models  import User
+from users.models import User
 
 
 class UsersSerializer(serializers.ModelSerializer):
@@ -61,16 +60,29 @@ class TitleWriteSerializer(serializers.ModelSerializer):
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    author = SlugRelatedField(slug_field='username', read_only=True)
+    author = serializers.SlugRelatedField(default=serializers.CurrentUserDefault(),
+                                          slug_field='username',
+                                          read_only=True)
 
     class Meta:
         fields = ('id', 'text', 'author', 'score', 'pub_date')
         model = Review
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        if request.method =='POST':
+            review = Review.objects.filter(
+                author=request.user,
+                title=self.context.get('view').kwargs.get('title_id')
+            )
+            if review:
+                raise serializers.ValidationError('Отзыв уже оставлен!')
+        return attrs
 
 
 class ReviewListSerializer(serializers.ModelSerializer):
     results = ReviewSerializer(many=True)
 
     class Meta:
-        model = Review
         fields = ('count', 'next', 'previous', 'results')
+        model = Review
