@@ -1,9 +1,19 @@
 from rest_framework import serializers
-from reviews.models import Title, Genre, Category
-from users.models  import User
+from rest_framework.validators import UniqueValidator
+
+from reviews.models import Category, Comment, Genre, Review, Title
+from users.models import User
+from users.validators import validate_username
 
 
 class UsersSerializer(serializers.ModelSerializer):
+    username = serializers.CharField(
+        required=True,
+        max_length=150,
+        validators=[validate_username,
+                    UniqueValidator(queryset=User.objects.all())]
+    )
+
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name',
@@ -16,10 +26,20 @@ class CreateUserSerializer(serializers.ModelSerializer):
         fields = ('username', 'email')
         model = User
 
+    def validate(self, attrs):
+        if len(attrs['username']) > 150:
+            raise serializers.ValidationError(
+                'Длина имени пользователя не должна превышать 150 символов')
+        return attrs
+
 
 class UserJWTTokenCreateSerializer(serializers.Serializer):
+    username = serializers.CharField(
+        required=True,
+        max_length=150,
+        validators=[validate_username, ]
+    )
     confirmation_code = serializers.CharField(required=True)
-    username = serializers.CharField(required=True)
 
 
 class GenreSerializer(serializers.ModelSerializer):
@@ -41,6 +61,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class TitleReadSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     category = CategorySerializer()
+    rating = serializers.IntegerField()
 
     class Meta:
         fields = '__all__'
@@ -56,3 +77,52 @@ class TitleWriteSerializer(serializers.ModelSerializer):
     class Meta:
         fields = '__all__'
         model = Title
+
+
+class ReviewSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(default=serializers.
+                                          CurrentUserDefault(),
+                                          slug_field='username',
+                                          read_only=True)
+
+    class Meta:
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
+        model = Review
+
+    def validate(self, attrs):
+        request = self.context.get('request')
+        if request.method == 'POST':
+            review = Review.objects.filter(
+                author=request.user,
+                title=self.context.get('view').kwargs.get('title_id')
+            )
+            if review:
+                raise serializers.ValidationError('Отзыв уже оставлен!')
+        return attrs
+
+
+class ReviewListSerializer(serializers.ModelSerializer):
+    results = ReviewSerializer(many=True)
+
+    class Meta:
+        fields = ('count', 'next', 'previous', 'results')
+        model = Review
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(default=serializers.
+                                          CurrentUserDefault(),
+                                          slug_field='username',
+                                          read_only=True)
+
+    class Meta:
+        fields = ('id', 'text', 'author', 'pub_date')
+        model = Comment
+
+
+class CommentListSerializer(serializers.ModelSerializer):
+    results = CommentSerializer(many=True)
+
+    class Meta:
+        fields = ('count', 'next', 'previous', 'results')
+        model = Comment

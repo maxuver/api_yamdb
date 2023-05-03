@@ -2,6 +2,7 @@ from http import HTTPStatus
 
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
+from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import filters, permissions, viewsets
@@ -9,17 +10,18 @@ from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
-from reviews.models import Category, Genre, Title
-from users.models import User
 
 from .filters import TitleFilter
 from .mixins import ListCreateDeleteViewSet
 from .permissions import (IsAdmin, IsAdminOrReadOnly,
                           IsOwnerAdminModeratorOrReadOnly)
-from .serializers import (CategorySerializer, CreateUserSerializer,
-                          GenreSerializer, TitleReadSerializer,
+from .serializers import (CategorySerializer, CommentSerializer,
+                          CreateUserSerializer, GenreSerializer,
+                          ReviewSerializer, TitleReadSerializer,
                           TitleWriteSerializer, UserJWTTokenCreateSerializer,
                           UsersSerializer)
+from reviews.models import Category, Genre, Review, Title
+from users.models import User
 
 
 class UsersViewSet(viewsets.ModelViewSet):
@@ -85,7 +87,7 @@ def user_jwt_token_create_view(request):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    queryset = Title.objects.all()
+    queryset = Title.objects.annotate(rating=Avg('reviews__score'))
     read_serializer_class = TitleReadSerializer
     write_serializer_class = TitleWriteSerializer
     filter_backends = [DjangoFilterBackend]
@@ -93,7 +95,7 @@ class TitleViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAdminOrReadOnly]
 
     def get_serializer_class(self):
-        if self.action in ('list', 'get'):
+        if self.action in ('list', 'retrieve'):
             return self.read_serializer_class
         return self.write_serializer_class
 
@@ -114,3 +116,39 @@ class CategoryViewSet(ListCreateDeleteViewSet):
     search_fields = ['name']
     lookup_field = 'slug'
     permission_classes = [IsAdminOrReadOnly]
+
+
+class ReviewViewSet(viewsets.ModelViewSet):
+    serializer_class = ReviewSerializer
+    permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
+    pagination_class = LimitOffsetPagination
+
+    def get_title(self):
+        return get_object_or_404(Title, id=self.kwargs.get('title_id'))
+
+    def get_queryset(self):
+        return self.get_title().reviews.all()
+
+    def perform_create(self, serializer):
+        serializer.save(
+            author=self.request.user,
+            title=self.get_title()
+        )
+
+
+class CommentViewSet(viewsets.ModelViewSet):
+    serializer_class = CommentSerializer
+    permission_classes = (IsOwnerAdminModeratorOrReadOnly,)
+    pagination_class = LimitOffsetPagination
+
+    def get_review(self):
+        return get_object_or_404(Review, id=self.kwargs.get('review_id'))
+
+    def get_queryset(self):
+        return self.get_review().comments.all()
+
+    def perform_create(self, serializer):
+        serializer.save(
+            author=self.request.user,
+            review=self.get_review()
+        )
