@@ -1,27 +1,25 @@
 from http import HTTPStatus
+
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import viewsets, permissions, filters
+from rest_framework import filters, permissions, viewsets
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
-
 from reviews.models import Category, Genre, Title
-from .permissions import IsAdminOrReadOnly
+from users.models import User
+
 from .filters import TitleFilter
 from .mixins import ListCreateDeleteViewSet
-from .serializers import (CategorySerializer, GenreSerializer,
-                          TitleReadSerializer, TitleWriteSerializer)
-
-
 from .permissions import (IsAdmin, IsAdminOrReadOnly,
                           IsOwnerAdminModeratorOrReadOnly)
-from .serializers import (UsersSerializer, CreateUserSerializer,
-                          UserJWTTokenCreateSerializer)
-from users.models import User
+from .serializers import (CategorySerializer, CreateUserSerializer,
+                          GenreSerializer, TitleReadSerializer,
+                          TitleWriteSerializer, UserJWTTokenCreateSerializer,
+                          UsersSerializer)
 
 
 class UsersViewSet(viewsets.ModelViewSet):
