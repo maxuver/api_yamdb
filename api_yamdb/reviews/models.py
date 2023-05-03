@@ -28,7 +28,7 @@ class Title(models.Model):
     year = models.IntegerField(
         verbose_name='год создания',
         validators=[validate_actual_year])
-    description = models.TextField(verbose_name='описание')
+    description = models.TextField(verbose_name='описание', blank=True)
     genre = models.ManyToManyField(Genre, through='GenreTitle')
     category = models.ForeignKey(
         Category,

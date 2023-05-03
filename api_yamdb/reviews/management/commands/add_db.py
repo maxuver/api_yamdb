@@ -24,6 +24,7 @@ class Command(BaseCommand):
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     User.objects.create(
+                        id=row['id'],
                         username=row['username'],
                         email=row['email'],
                         role=row['role'],
@@ -33,7 +34,7 @@ class Command(BaseCommand):
                     )
             self.stdout.write(self.style.SUCCESS(
                 'User data imported successfully'))
-        elif model == 'Category':
+        elif model == 'category':
             with open(os.path.join(
                     settings.BASE_DIR, 'static/data/', csv_file_path)
                     ) as csvfile:
@@ -46,7 +47,7 @@ class Command(BaseCommand):
                     )
             self.stdout.write(self.style.SUCCESS(
                 'Category data imported successfully'))
-        elif model == 'Genre':
+        elif model == 'genre':
             with open(os.path.join(
                     settings.BASE_DIR, 'static/data/', csv_file_path)
                     ) as csvfile:
@@ -58,20 +59,22 @@ class Command(BaseCommand):
                     )
             self.stdout.write(self.style.SUCCESS(
                 'Genre data imported successfully'))
-        elif model == 'Title':
+        elif model == 'title':
             with open(os.path.join(
-                    settings.BASE_DIR, 'static/data/', csv_file_path)
-                    ) as csvfile:
+                    settings.BASE_DIR,
+                    'static/data/',
+                    csv_file_path),
+                    encoding='utf-8') as csvfile:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     Title.objects.create(
                         name=row['name'],
                         year=row['year'],
-                        category=row['category']
+                        category_id=row['category']
                     )
             self.stdout.write(self.style.SUCCESS(
                 'Title data imported successfully'))
-        elif model == 'GenreTitle':
+        elif model == 'genretitle':
             with open(os.path.join(
                     settings.BASE_DIR, 'static/data/', csv_file_path)
                     ) as csvfile:
@@ -83,31 +86,35 @@ class Command(BaseCommand):
                     )
             self.stdout.write(self.style.SUCCESS(
                 'GenreTitle data imported successfully'))
-        elif model == 'Review':
+        elif model == 'review':
             with open(os.path.join(
-                    settings.BASE_DIR, 'static/data/', csv_file_path)
-                    ) as csvfile:
+                    settings.BASE_DIR,
+                    'static/data/',
+                    csv_file_path),
+                    encoding='utf-8') as csvfile:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     Review.objects.create(
                         title_id=row['title_id'],
                         text=row['text'],
-                        author=row['author'],
+                        author_id=row['author'],
                         score=row['score'],
                         pub_date=row['pub_date']
                     )
             self.stdout.write(self.style.SUCCESS(
                 'Review data imported successfully'))
-        elif model == 'Comment':
+        elif model == 'comment':
             with open(os.path.join(
-                    settings.BASE_DIR, 'static/data/', csv_file_path)
-                    ) as csvfile:
+                    settings.BASE_DIR,
+                    'static/data/',
+                    csv_file_path),
+                    encoding='utf-8') as csvfile:
                 reader = csv.DictReader(csvfile)
                 for row in reader:
                     Comment.objects.create(
                         review_id=row['review_id'],
                         text=row['text'],
-                        author=row['author'],
+                        author_id=row['author'],
                         pub_date=row['pub_date'],
                     )
             self.stdout.write(self.style.SUCCESS(

@@ -31,6 +31,8 @@ class UsersViewSet(viewsets.ModelViewSet):
     lookup_field = 'username'
     lookup_value_regex = '[^/]+'
     pagination_class = LimitOffsetPagination
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['username']
 
     @action(methods=['patch', 'get'], detail=False,
             permission_classes=[permissions.IsAuthenticated],
