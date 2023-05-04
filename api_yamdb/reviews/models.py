@@ -8,7 +8,7 @@ CHOICES = [(i, i) for i in range(1, 11)]
 
 
 class Genre(models.Model):
-    name = models.CharField(max_length=200, verbose_name='Название')
+    name = models.CharField(max_length=200, verbose_name='название')
     slug = models.SlugField(unique=True)
 
     def __str__(self):
@@ -16,7 +16,7 @@ class Genre(models.Model):
 
 
 class Category(models.Model):
-    name = models.CharField(max_length=200, verbose_name='Название')
+    name = models.CharField(max_length=200, verbose_name='название')
     slug = models.SlugField(unique=True)
 
     def __str__(self):
@@ -24,11 +24,11 @@ class Category(models.Model):
 
 
 class Title(models.Model):
-    name = models.CharField(max_length=256, verbose_name='Название')
+    name = models.CharField(max_length=256, verbose_name='название')
     year = models.IntegerField(
-        verbose_name='Год создания',
+        verbose_name='год создания',
         validators=[validate_actual_year])
-    description = models.TextField(verbose_name='Описание')
+    description = models.TextField(verbose_name='описание', blank=True)
     genre = models.ManyToManyField(Genre, through='GenreTitle')
     category = models.ForeignKey(
         Category,
@@ -37,15 +37,15 @@ class Title(models.Model):
         blank=True,
         null=True)
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         constraints = [
             models.UniqueConstraint(
                 fields=['name', 'category'], name='unique_name_category'
             ),
         ]
+
+    def __str__(self):
+        return self.name
 
 
 class GenreTitle(models.Model):
