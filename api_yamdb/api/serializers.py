@@ -1,36 +1,23 @@
-from rest_framework import serializers, validators
+from rest_framework import serializers
+from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 
-from reviews.models import Title, Genre, Category, Review
+from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import User
 from users.validators import validate_username
-from rest_framework.validators import UniqueValidator
 
 
 class UsersSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(
-        required=True,
-        max_length=150,
-        validators=[validate_username,
-                    UniqueValidator(queryset=User.objects.all())]
-    )
 
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name',
                   'bio', 'role')
 
-
 class CreateUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         fields = ('username', 'email')
         model = User
-
-    def validate(self, attrs):
-        if len(attrs['username']) > 150:
-            raise serializers.ValidationError(
-                'Длина имени пользователя не должна превышать 150 символов')
-        return attrs
 
 
 class UserJWTTokenCreateSerializer(serializers.Serializer):
@@ -61,6 +48,7 @@ class CategorySerializer(serializers.ModelSerializer):
 class TitleReadSerializer(serializers.ModelSerializer):
     genre = GenreSerializer(many=True)
     category = CategorySerializer()
+    rating = serializers.IntegerField()
 
     class Meta:
         fields = '__all__'
@@ -106,3 +94,22 @@ class ReviewListSerializer(serializers.ModelSerializer):
     class Meta:
         fields = ('count', 'next', 'previous', 'results')
         model = Review
+
+
+class CommentSerializer(serializers.ModelSerializer):
+    author = serializers.SlugRelatedField(default=serializers.
+                                          CurrentUserDefault(),
+                                          slug_field='username',
+                                          read_only=True)
+
+    class Meta:
+        fields = ('id', 'text', 'author', 'pub_date')
+        model = Comment
+
+
+class CommentListSerializer(serializers.ModelSerializer):
+    results = CommentSerializer(many=True)
+
+    class Meta:
+        fields = ('count', 'next', 'previous', 'results')
+        model = Comment
