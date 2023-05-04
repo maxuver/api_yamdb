@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator
+from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
 
 from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import User
@@ -7,6 +7,7 @@ from users.validators import validate_username
 
 
 class UsersSerializer(serializers.ModelSerializer):
+
     username = serializers.CharField(
         required=True,
         max_length=150,
@@ -16,11 +17,11 @@ class UsersSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=254, validators=[
                     UniqueValidator(queryset=User.objects.all())])
 
+
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name',
                   'bio', 'role')
-
 
 class CreateUserSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(max_length=254)

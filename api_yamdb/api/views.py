@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.db.models import Avg
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
-from rest_framework import filters, permissions, viewsets
+from rest_framework import viewsets, permissions, filters, status
 from rest_framework.decorators import action, api_view, permission_classes
 from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
@@ -25,6 +25,7 @@ from users.models import User
 
 
 class UsersViewSet(viewsets.ModelViewSet):
+    http_method_names = ['get', 'post', 'patch', 'delete']
     queryset = User.objects.all()
     permission_classes = [IsAdmin]
     serializer_class = UsersSerializer
@@ -46,7 +47,7 @@ class UsersViewSet(viewsets.ModelViewSet):
                 instance, data=request.data, partial=True)
             serializer.is_valid(raise_exception=True)
             serializer.save(role=self.request.user.role)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -67,7 +68,7 @@ def user_create_view(request):
               subject='Confirmation code',
               recipient_list=[email],
               from_email=None)
-    return Response(serializer.data, status=HTTPStatus.OK)
+    return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 @api_view(['POST'])
@@ -82,7 +83,7 @@ def user_jwt_token_create_view(request):
         token = AccessToken.for_user(user)
         return Response(
             data={'token': str(token)},
-            status=HTTPStatus.OK
+            status=status.HTTP_200_OK
         )
     return Response(
         'Неверный код подтверждения или имя пользователя!',
