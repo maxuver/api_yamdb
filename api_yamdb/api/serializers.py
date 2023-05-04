@@ -8,12 +8,26 @@ from users.validators import validate_username
 
 class UsersSerializer(serializers.ModelSerializer):
 
+    username = serializers.CharField(
+        required=True,
+        max_length=150,
+        validators=[validate_username,
+                    UniqueValidator(queryset=User.objects.all())]
+    )
+    email = serializers.EmailField(max_length=254, validators=[
+                    UniqueValidator(queryset=User.objects.all())])
+
+
     class Meta:
         model = User
         fields = ('username', 'email', 'first_name', 'last_name',
                   'bio', 'role')
 
 class CreateUserSerializer(serializers.ModelSerializer):
+    email = serializers.EmailField(max_length=254)
+    username = serializers.CharField(
+        max_length=150,
+        validators=[validate_username])
 
     class Meta:
         fields = ('username', 'email')
