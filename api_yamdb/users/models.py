@@ -13,12 +13,6 @@ class User(AbstractUser):
         (MODERATOR, 'Модератор'),
         (USER, 'Пользователь')
     )
-    username = models.CharField(
-        verbose_name='Имя пользователя',
-        max_length=154,
-        validators=[validate_username],
-        unique=True
-    )
     bio = models.TextField(
         'Биография',
         blank=True,

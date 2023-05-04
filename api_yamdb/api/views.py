@@ -33,6 +33,7 @@ class UsersViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
     filter_backends = [filters.SearchFilter]
     search_fields = ['username']
+    http_method_names = ['get', 'post', 'patch', 'delete']
 
     @action(methods=['patch', 'get'], detail=False,
             permission_classes=[permissions.IsAuthenticated],
@@ -53,12 +54,13 @@ class UsersViewSet(viewsets.ModelViewSet):
 def user_create_view(request):
     serializer = CreateUserSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
-    email = serializer.validated_data.get('email')
-    username = serializer.validated_data.get('username')
-    serializer.save()
-    confirmation_code = default_token_generator.make_token(
-        User.objects.get(email=email, username=username)
-    )
+    try:
+        email = serializer.data.get('email')
+        username = serializer.data.get('username')
+        user, _ = User.objects.get_or_create(email=email, username=username)
+    except IndexError:
+        return Response(serializer.errors, status=HTTPStatus.BAD_REQUEST)
+    confirmation_code = default_token_generator.make_token(user)
     MESSAGE = (f'Здравствуйте, {username}! '
                f'Ваш код подтверждения: {confirmation_code}')
     send_mail(message=MESSAGE,
