@@ -32,4 +32,5 @@ class Command(BaseCommand):
                     model.objects.create(**row)
 
             self.stdout.write(self.style.SUCCESS(
-                f'{model.__name__} data imported successfully from {csv_file}'))
+                f'{model.__name__} data imported successfully from {csv_file}'
+            ))
