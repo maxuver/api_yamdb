@@ -1,6 +1,5 @@
 from rest_framework import serializers
-from rest_framework.validators import UniqueValidator, UniqueTogetherValidator
-from django.shortcuts import get_object_or_404
+from rest_framework.validators import UniqueValidator
 from reviews.models import Category, Comment, Genre, Review, Title
 from users.models import User
 from users.validators import validate_username
@@ -13,8 +12,9 @@ class UsersSerializer(serializers.ModelSerializer):
         validators=[validate_username,
                     UniqueValidator(queryset=User.objects.all())]
     )
-    email = serializers.EmailField(max_length=254, validators=[
-                    UniqueValidator(queryset=User.objects.all())])
+    email = serializers.EmailField(
+        max_length=254, validators=[
+            UniqueValidator(queryset=User.objects.all())])
 
     class Meta:
         model = User
@@ -23,7 +23,8 @@ class UsersSerializer(serializers.ModelSerializer):
 
 
 class CreateUserSerializer(serializers.Serializer):
-    username = serializers.RegexField(regex=r'^[\w.@+-]+\Z', required=True, max_length=150)
+    username = serializers.RegexField(
+        regex=r'^[\w.@+-]+\Z', required=True, max_length=150)
     email = serializers.EmailField(required=True, max_length=254)
 
     '''class Meta:
