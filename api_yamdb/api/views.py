@@ -58,7 +58,8 @@ def user_create_view(request):
     try:
         email = serializer.data.get('email')
         username = serializer.data.get('username')
-        user, _ = User.objects.get_or_create(email=email, username=username)
+        user, _ = User.objects.get_or_create(
+            email=email, username=username)
     except IntegrityError:
         return Response(serializer.errors, status=HTTPStatus.BAD_REQUEST)
     confirmation_code = default_token_generator.make_token(user)
