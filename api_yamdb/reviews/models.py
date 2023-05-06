@@ -7,20 +7,23 @@ from users.models import User
 CHOICES = [(i, i) for i in range(1, 11)]
 
 
-class Genre(models.Model):
+class BaseModel(models.Model):
     name = models.CharField(max_length=200, verbose_name='название')
     slug = models.SlugField(unique=True)
+
+    class Meta:
+        abstract = True
 
     def __str__(self):
         return self.name
 
 
-class Category(models.Model):
-    name = models.CharField(max_length=200, verbose_name='название')
-    slug = models.SlugField(unique=True)
+class Genre(BaseModel):
+    pass
 
-    def __str__(self):
-        return self.name
+
+class Category(BaseModel):
+    pass
 
 
 class Title(models.Model):
