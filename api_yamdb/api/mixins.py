@@ -19,4 +19,3 @@ class ListCreateDeleteViewSet(mixins.ListModelMixin,
           queryset = MyModel.objects.all()
           serializer_class = MyModelSerializer
     """
-    pass
