@@ -64,6 +64,12 @@ Run the project:
 python manage.py runserver
 ```
 
+If necessary, fill the database with test data:
+
+```
+python manage.py dataimport
+```
+
 ## Examples of work
 Detailed documentation is available at the /redoc/ endpoint.
 For unauthorized users, API work is available in read mode.
@@ -312,3 +318,11 @@ Changing data from your own account:
 Access rights: Any authenticated user
 PATCH /api/v1/users/me/ # Changing data from your own account.
 ```
+
+## Creators
+
+**[Maxim Patsyuk](https://github.com/maxuver)** - the first developer, responsible for developing the entire user management system. This involved creating and implementing a registration and authentication system, handling access rights and permissions, managing tokens, and developing an e-mail confirmation system.
+
+**[Kseniia Baryshnikova](https://github.com/KseniiaBaryshnikova)** -  the second developer who described Categories, Genres, and Titles: models, views, and endpoints for them.
+
+**[Andrey AlexPy](https://github.com/AndreyAlexPy)** - the third developer who created Reviews and Comments: described models, views, configured endpoints, and defined access permissions for requests. The ratings of works, as well as the implementation of the mechanism for importing data from CSV files, were also his contribution.
