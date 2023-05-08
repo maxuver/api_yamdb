@@ -14,12 +14,13 @@ from rest_framework_simplejwt.tokens import AccessToken
 from api.filters import TitleFilter
 from api.mixins import ListCreateDeleteViewSet
 from api.permissions import (IsAdmin, IsAdminOrReadOnly,
-                          IsOwnerAdminModeratorOrReadOnly)
+                             IsOwnerAdminModeratorOrReadOnly)
 from api.serializers import (CategorySerializer, CommentSerializer,
-                          CreateUserSerializer, GenreSerializer,
-                          ReviewSerializer, TitleReadSerializer,
-                          TitleWriteSerializer, UserJWTTokenCreateSerializer,
-                          UsersSerializer)
+                             CreateUserSerializer, GenreSerializer,
+                             ReviewSerializer, TitleReadSerializer,
+                             TitleWriteSerializer,
+                             UserJWTTokenCreateSerializer,
+                             UsersSerializer)
 from reviews.models import Category, Genre, Review, Title
 from users.models import User
 

@@ -37,14 +37,14 @@ class Title(models.Model):
         validators=[validate_actual_year])
     description = models.TextField('описание', blank=True)
     genre = models.ManyToManyField(Genre, through='GenreTitle',
-                                   verbose_name ='жанр')
+                                   verbose_name='жанр')
     category = models.ForeignKey(
         Category,
         on_delete=models.SET_NULL,
         related_name='titles',
         blank=True,
         null=True,
-        verbose_name ='категория')
+        verbose_name='категория')
 
     class Meta:
         verbose_name = 'произведение'
@@ -61,9 +61,9 @@ class Title(models.Model):
 
 class GenreTitle(models.Model):
     genre = models.ForeignKey(Genre, on_delete=models.CASCADE,
-                              verbose_name ='жанр')
+                              verbose_name='жанр')
     title = models.ForeignKey(Title, on_delete=models.CASCADE,
-                              verbose_name ='произведение')
+                              verbose_name='произведение')
 
     def __str__(self):
         return f'{self.title} {self.genre}'

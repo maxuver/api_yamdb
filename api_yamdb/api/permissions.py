@@ -10,9 +10,10 @@ class IsAdmin(permissions.BasePermission):
 
 
 class IsOwnerAdminModeratorOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
-    """"IsOwnerAdminModeratorOrReadOnly permission allows access to the resourse 
-    if the user is authenticated or a safe method is used. Access to the object is 
-    allowed if a safe method is used / user is object owner or has moderator/admin/ 
+    """"IsOwnerAdminModeratorOrReadOnly permission allows
+    access to the resourse if the user is authenticated or a safe
+    method is used. Access to the object is allowed if a safe method
+    is used / user is object owner or has moderator/admin/
     superuser role."""
 
     message = 'Изменить контент может только автор, админ или модератор.'
@@ -25,8 +26,9 @@ class IsOwnerAdminModeratorOrReadOnly(permissions.IsAuthenticatedOrReadOnly):
 
 
 class IsAdminOrReadOnly(permissions.BasePermission):
-    """"IsAdminOrReadOnly permission allows access to the resourse if a safe method 
-    is used or if the user is authenticated and has an admin/superuser role."""
+    """"IsAdminOrReadOnly permission allows access to the resourse
+    if a safe method is used or if the user is authenticated
+    and has an admin/superuser role."""
 
     message = 'Изменить контент может только админ.'
 
