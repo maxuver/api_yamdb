@@ -45,6 +45,7 @@ class UserJWTTokenCreateSerializer(serializers.Serializer):
 
 
 class GenreSerializer(serializers.ModelSerializer):
+    """Serializer for Genre."""
 
     class Meta:
         fields = ('name', 'slug')
@@ -53,6 +54,7 @@ class GenreSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    """Serializer for Category."""
 
     class Meta:
         fields = ('name', 'slug')
@@ -71,6 +73,7 @@ class TitleReadSerializer(serializers.ModelSerializer):
 
 
 class TitleWriteSerializer(serializers.ModelSerializer):
+    "Serializer for creating works."
     category = serializers.SlugRelatedField(
         slug_field='slug', queryset=Category.objects.all())
     genre = serializers.SlugRelatedField(
@@ -92,6 +95,7 @@ class ReviewSerializer(serializers.ModelSerializer):
         model = Review
 
     def validate(self, attrs):
+        """Prohibits users from writing a second review on the work."""
         request = self.context.get('request')
         if request.method == 'POST':
             review = Review.objects.filter(
