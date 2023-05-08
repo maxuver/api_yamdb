@@ -325,4 +325,4 @@ PATCH /api/v1/users/me/ # Changing data from your own account.
 
 **[Andrey AlexPy](https://github.com/AndreyAlexPy)** -  the second developer who described Categories, Genres, and Titles: models, views, and endpoints for them.
 
-**[Kseniia Baryshnikova](https://github.com/KseniiaBaryshnikova)** - the third developer who created Reviews and Comments: described models, views, configured endpoints, and defined access permissions for requests. The ratings of works, as well as the implementation of the mechanism for importing data from CSV files, were also his contribution.
+**[Kseniia Baryshnikova](https://github.com/KseniiaBaryshnikova)** - the third developer who created Reviews and Comments: described models, views, configured endpoints, and defined access permissions for requests. The ratings of works, as well as the implementation of the mechanism for importing data from CSV files, were also her contribution.

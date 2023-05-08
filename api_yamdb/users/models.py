@@ -5,6 +5,7 @@ from users.validators import validate_username
 
 
 class User(AbstractUser):
+
     ADMIN = 'admin'
     MODERATOR = 'moderator'
     USER = 'user'
@@ -15,32 +16,38 @@ class User(AbstractUser):
     )
 
     username = models.CharField(
-        verbose_name='Имя пользователя',
+        'имя пользователя',
         max_length=150,
         validators=[validate_username],
         unique=True
     )
 
     bio = models.TextField(
-        'Биография',
+        'биография',
         blank=True,
     )
     email = models.EmailField(
-        verbose_name='Email',
+        'email',
         unique=True,
         max_length=254,
     )
     first_name = models.CharField(
-        verbose_name='Имя',
+        'имя',
         max_length=150,
         blank=True
     )
-    role = models.CharField(max_length=30,
+    role = models.CharField('роль',
+                            max_length=30,
                             choices=USER_ROLES,
                             default='user')
 
     class Meta:
         ordering = ('username',)
+        verbose_name = 'пользователь'
+        verbose_name_plural = 'пользователи'
+
+    def __str__(self):
+        return self.username
 
     @property
     def is_admin(self):

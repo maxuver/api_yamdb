@@ -11,11 +11,11 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.response import Response
 from rest_framework_simplejwt.tokens import AccessToken
 
-from .filters import TitleFilter
-from .mixins import ListCreateDeleteViewSet
-from .permissions import (IsAdmin, IsAdminOrReadOnly,
+from api.filters import TitleFilter
+from api.mixins import ListCreateDeleteViewSet
+from api.permissions import (IsAdmin, IsAdminOrReadOnly,
                           IsOwnerAdminModeratorOrReadOnly)
-from .serializers import (CategorySerializer, CommentSerializer,
+from api.serializers import (CategorySerializer, CommentSerializer,
                           CreateUserSerializer, GenreSerializer,
                           ReviewSerializer, TitleReadSerializer,
                           TitleWriteSerializer, UserJWTTokenCreateSerializer,
@@ -148,7 +148,7 @@ class CommentViewSet(viewsets.ModelViewSet):
     pagination_class = LimitOffsetPagination
 
     def get_review(self):
-        return get_object_or_404(Review, id=self.kwargs.get('review_id'))
+        return get_object_or_404(Review, pk=self.kwargs.get('review_id'))
 
     def get_queryset(self):
         return self.get_review().comments.all()
