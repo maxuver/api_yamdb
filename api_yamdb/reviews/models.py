@@ -19,12 +19,14 @@ class GenreCategoryModel(models.Model):
 
 
 class Genre(GenreCategoryModel):
+
     class Meta(GenreCategoryModel.Meta):
         verbose_name = "жанр"
         verbose_name_plural = "жанры"
 
 
 class Category(GenreCategoryModel):
+    
     class Meta(GenreCategoryModel.Meta):
         verbose_name = "категория"
         verbose_name_plural = "категории"
